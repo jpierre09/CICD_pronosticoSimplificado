@@ -37,9 +37,19 @@ async def weather(url: str = None):
     if not url.startswith("http://") and not url.startswith("https://"):
         raise HTTPException(status_code=400, detail='Invalid URL, does not comply with the protocol')
     
-    
 
+    # Make request to the URL
     response = requests.get(url)
+
+
+    # Check if content is json, if no "remote server error"
+
+    content_type = response.headers.get("Content-Type")
+    if not content_type or "application/json" not in content_type:
+        raise HTTPException(status_code=500, detail="Unexpected response content type")
+
+
+
     data = response.json()
     
     return data
